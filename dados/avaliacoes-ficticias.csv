@@ -1,0 +1,101 @@
+id,data,cliente,nota,canal,texto
+A001,2026-10-23,Cliente 001,2,app,"Veio milkshake no lugar de pizza de calabresa. Tenho alergia, isso é perigoso."
+A002,2026-10-10,Cliente 002,2,site,"Esqueceram o hambúrguer de novo, segunda vez nesta semana."
+A003,2026-10-06,Cliente 003,4,app,Gostei do pastel. Seria legal ter combo com bebida.
+A004,2026-10-05,Cliente 004,4,app,"Tudo perfeito, o temaki estava incrível. Vou pedir de novo."
+A005,2026-10-06,Cliente 005,5,site,"Atendimento ótimo, mandaram até um bilhete de agradecimento."
+A006,2026-10-28,Cliente 006,4,site,"Tudo perfeito, o prato feito estava incrível. Vou pedir de novo."
+A007,2026-10-05,Cliente 007,1,app,"O pedido veio trocado: era lasanha, chegou pastel."
+A008,2026-10-01,Cliente 008,4,telefone,Comida boa. Sugiro mandar mais guardanapos.
+A009,2026-10-05,Cliente 009,5,telefone,Entrega rápida e o açaí estava muito saboroso. Nota 10.
+A010,2026-10-20,Cliente 010,1,site,"Demorou demais, mais de 90 minutos. O app dizia 30."
+A011,2026-10-13,Cliente 011,1,site,"O pedido veio trocado: era prato feito, chegou lasanha."
+A012,2026-10-07,Cliente 012,3,app,"Demorou demais, mais de 25 minutos. O app dizia 30."
+A013,2026-10-04,Cliente 013,1,telefone,Pedi para tirar a cebola e ignoraram a observação.
+A014,2026-10-20,Cliente 014,5,app,Melhor açaí da cidade! Chegou rápido e quentinho.
+A015,2026-10-12,Cliente 015,2,site,Faltou o marmita de frango no pedido. Paguei e não recebi.
+A016,2026-10-15,Cliente 016,3,site,O temaki estava cru por dentro.
+A017,2026-10-24,Cliente 017,1,telefone,Faltou o sushi no pedido. Paguei e não recebi.
+A018,2026-10-01,Cliente 018,2,telefone,Achei um cabelo no sushi. Muito decepcionante.
+A019,2026-10-25,Cliente 019,4,site,O pastel é sempre bom. Cliente fiel!
+A020,2026-10-30,Cliente 020,5,site,O pizza de calabresa é sempre bom. Cliente fiel!
+A021,2026-10-11,Cliente 021,2,telefone,O marmita de frango estava frio e a batata murcha.
+A022,2026-10-07,Cliente 022,3,site,O entregador ficou parado no mapa e o pedido chegou com 40 minutos de atraso.
+A023,2026-10-09,Cliente 023,2,telefone,"O hambúrguer chegou todo amassado, a caixa estava rasgada."
+A024,2026-10-12,Cliente 024,1,app,Porção bem menor do que nas fotos. O milkshake parecia requentado.
+A025,2026-10-11,Cliente 025,2,site,O entregador ficou parado no mapa e o pedido chegou com 40 minutos de atraso.
+A026,2026-10-26,Cliente 026,1,telefone,Porção bem menor do que nas fotos. O milkshake parecia requentado.
+A027,2026-10-29,Cliente 027,2,site,"Demorou demais, mais de 70 minutos. O app dizia 30."
+A028,2026-10-13,Cliente 028,2,app,"O pedido veio trocado: era pastel, chegou pizza de calabresa."
+A029,2026-10-05,Cliente 029,3,telefone,"Demorou demais, mais de 25 minutos. O app dizia 30."
+A030,2026-10-05,Cliente 030,4,telefone,Comida boa. Sugiro mandar mais guardanapos.
+A031,2026-10-17,Cliente 031,4,app,Melhor açaí da cidade! Chegou rápido e quentinho.
+A032,2026-10-09,Cliente 032,5,site,"Tudo perfeito, o lasanha estava incrível. Vou pedir de novo."
+A033,2026-10-09,Cliente 033,3,app,O prato feito estava frio e a batata murcha.
+A034,2026-10-27,Cliente 034,3,site,O restaurante cancelou meu pedido sem avisar.
+A035,2026-10-17,Cliente 035,4,app,O prato feito é sempre bom. Cliente fiel!
+A036,2026-10-25,Cliente 036,3,app,Comida boa. Sugiro mandar mais guardanapos.
+A037,2026-10-18,Cliente 037,5,site,O açaí é sempre bom. Cliente fiel!
+A038,2026-10-26,Cliente 038,3,telefone,Comida boa. Sugiro mandar mais guardanapos.
+A039,2026-10-02,Cliente 039,2,telefone,A embalagem chegou aberta e o molho vazou na sacola.
+A040,2026-10-15,Cliente 040,1,telefone,Pedi temaki e veio prato feito. Ninguém respondeu no chat.
+A041,2026-10-15,Cliente 041,2,telefone,Faltou o prato feito no pedido. Paguei e não recebi.
+A042,2026-10-29,Cliente 042,5,telefone,"Tudo perfeito, o temaki estava incrível. Vou pedir de novo."
+A043,2026-10-04,Cliente 043,1,site,Faltou o marmita de frango no pedido. Paguei e não recebi.
+A044,2026-10-14,Cliente 044,1,app,Pedi para tirar a cebola e ignoraram a observação.
+A045,2026-10-05,Cliente 045,1,app,Faltou o sushi no pedido. Paguei e não recebi.
+A046,2026-10-29,Cliente 046,3,app,O pedido chegou 70 minutos depois do previsto e a comida estava fria.
+A047,2026-10-17,Cliente 047,2,site,Pedi para tirar a cebola e ignoraram a observação.
+A048,2026-10-03,Cliente 048,2,app,Entrega atrasada de novo. Esperei 50 minutos com fome.
+A049,2026-10-23,Cliente 049,2,site,"O pastel chegou todo amassado, a caixa estava rasgada."
+A050,2026-10-17,Cliente 050,5,app,O pastel é sempre bom. Cliente fiel!
+A051,2026-10-09,Cliente 051,1,app,O marmita de frango estava cru por dentro.
+A052,2026-10-13,Cliente 052,1,telefone,O restaurante cancelou meu pedido sem avisar.
+A053,2026-10-03,Cliente 053,2,app,Pedi para tirar a cebola e ignoraram a observação.
+A054,2026-10-01,Cliente 054,2,app,Pedi açaí e veio lasanha. Ninguém respondeu no chat.
+A055,2026-10-03,Cliente 055,4,app,Comida boa. Sugiro mandar mais guardanapos.
+A056,2026-10-14,Cliente 056,2,telefone,"O temaki veio salgado demais, não deu para comer."
+A057,2026-10-04,Cliente 057,2,site,O açaí estava frio e a batata murcha.
+A058,2026-10-21,Cliente 058,5,telefone,"Tudo perfeito, o hambúrguer estava incrível. Vou pedir de novo."
+A059,2026-10-22,Cliente 059,5,site,"Atendimento ótimo, mandaram até um bilhete de agradecimento."
+A060,2026-10-01,Cliente 060,5,telefone,Entrega rápida e o pastel estava muito saboroso. Nota 10.
+A061,2026-10-16,Cliente 061,2,site,Achei um cabelo no prato feito. Muito decepcionante.
+A062,2026-10-18,Cliente 062,3,telefone,"Derramou o suco dentro da sacola, molhou tudo."
+A063,2026-10-07,Cliente 063,2,site,Achei um cabelo no sushi. Muito decepcionante.
+A064,2026-10-03,Cliente 064,2,site,Achei um cabelo no pastel. Muito decepcionante.
+A065,2026-10-28,Cliente 065,4,telefone,Melhor açaí da cidade! Chegou rápido e quentinho.
+A066,2026-10-15,Cliente 066,2,app,Entrega atrasada de novo. Esperei 25 minutos com fome.
+A067,2026-10-12,Cliente 067,4,telefone,"Bom, mas podiam ter opção sem glúten."
+A068,2026-10-07,Cliente 068,2,app,O pastel estava cru por dentro.
+A069,2026-10-16,Cliente 069,2,telefone,O entregador ficou parado no mapa e o pedido chegou com 25 minutos de atraso.
+A070,2026-10-03,Cliente 070,2,app,"Comida boa, mas o atraso de 25 minutos estragou a experiência."
+A071,2026-10-13,Cliente 071,3,site,Comida boa. Sugiro mandar mais guardanapos.
+A072,2026-10-17,Cliente 072,3,telefone,"Bom, mas podiam ter opção sem glúten."
+A073,2026-10-05,Cliente 073,4,telefone,Gostei do milkshake. Seria legal ter combo com bebida.
+A074,2026-10-21,Cliente 074,5,telefone,Melhor milkshake da cidade! Chegou rápido e quentinho.
+A075,2026-10-19,Cliente 075,1,telefone,"Esqueceram o prato feito de novo, segunda vez nesta semana."
+A076,2026-10-02,Cliente 076,2,telefone,O pedido chegou 25 minutos depois do previsto e a comida estava fria.
+A077,2026-10-18,Cliente 077,5,telefone,"Atendimento ótimo, mandaram até um bilhete de agradecimento."
+A078,2026-10-09,Cliente 078,5,site,"Tudo perfeito, o hambúrguer estava incrível. Vou pedir de novo."
+A079,2026-10-22,Cliente 079,2,telefone,"Derramou o suco dentro da sacola, molhou tudo."
+A080,2026-10-08,Cliente 080,4,app,Melhor temaki da cidade! Chegou rápido e quentinho.
+A081,2026-10-03,Cliente 081,5,telefone,"Atendimento ótimo, mandaram até um bilhete de agradecimento."
+A082,2026-10-03,Cliente 082,2,app,"Esqueceram o sushi de novo, segunda vez nesta semana."
+A083,2026-10-19,Cliente 083,2,app,Entrega atrasada de novo. Esperei 90 minutos com fome.
+A084,2026-10-22,Cliente 084,2,telefone,"O temaki chegou todo amassado, a caixa estava rasgada."
+A085,2026-10-10,Cliente 085,3,site,"O marmita de frango chegou todo amassado, a caixa estava rasgada."
+A086,2026-10-10,Cliente 086,1,site,"Comida boa, mas o atraso de 40 minutos estragou a experiência."
+A087,2026-10-27,Cliente 087,3,site,O entregador ficou parado no mapa e o pedido chegou com 25 minutos de atraso.
+A088,2026-10-19,Cliente 088,1,app,Faltou o lasanha no pedido. Paguei e não recebi.
+A089,2026-10-20,Cliente 089,3,telefone,O restaurante cancelou meu pedido sem avisar.
+A090,2026-10-16,Cliente 090,3,site,Entrega atrasada de novo. Esperei 40 minutos com fome.
+A091,2026-10-22,Cliente 091,5,site,Melhor hambúrguer da cidade! Chegou rápido e quentinho.
+A092,2026-10-13,Cliente 092,2,app,Porção bem menor do que nas fotos. O sushi parecia requentado.
+A093,2026-10-27,Cliente 093,3,app,Entrega atrasada de novo. Esperei 50 minutos com fome.
+A094,2026-10-12,Cliente 094,5,site,Entrega rápida e o marmita de frango estava muito saboroso. Nota 10.
+A095,2026-10-25,Cliente 095,2,app,Entrega atrasada de novo. Esperei 70 minutos com fome.
+A096,2026-10-21,Cliente 096,2,app,O pedido chegou 50 minutos depois do previsto e a comida estava fria.
+A097,2026-10-07,Cliente 097,5,site,O sushi é sempre bom. Cliente fiel!
+A098,2026-10-07,Cliente 098,2,app,"Derramou o suco dentro da sacola, molhou tudo."
+A099,2026-10-21,Cliente 099,2,site,"Comida boa, mas o atraso de 40 minutos estragou a experiência."
+A100,2026-10-16,Cliente 100,3,site,Achei um cabelo no hambúrguer. Muito decepcionante.
