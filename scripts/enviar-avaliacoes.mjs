@@ -4,6 +4,10 @@
 // Uso (Node 18 ou mais novo, sem instalar nada):
 //   node scripts/enviar-avaliacoes.mjs http://localhost:5678/webhook/avaliacao
 //   node scripts/enviar-avaliacoes.mjs http://localhost:5678/webhook/avaliacao 10   (só as 10 primeiras)
+//
+// Entre uma avaliação e outra o script espera PAUSA_MS (padrão 4 s), para não passar do
+// limite de chamadas por minuto do plano grátis do Gemini. Se uma avaliação falhar,
+// ele espera 20 s e tenta de novo, até 3 vezes.
 
 import { readFileSync, writeFileSync } from 'node:fs';
 
@@ -34,23 +38,41 @@ function lerCsv(caminho) {
 const avaliacoes = lerCsv('dados/avaliacoes-ficticias.csv').slice(0, limite);
 const gabarito = Object.fromEntries(lerCsv('dados/gabarito.csv').map((g) => [g.id, g.categoria_esperada]));
 
+const PAUSA_MS = Number(process.env.PAUSA_MS ?? 4000);
+const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
+
+async function enviar(av) {
+  for (let tentativa = 1; tentativa <= 3; tentativa++) {
+    try {
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...av, nota: Number(av.nota) }),
+      });
+      const corpo = await resp.json().catch(() => ({}));
+      if (resp.ok && corpo.categoria) return { resp, corpo, tentativa };
+      if (tentativa === 3) return { resp, corpo, tentativa };
+    } catch (erro) {
+      if (tentativa === 3) throw erro;
+    }
+    console.log(`${av.id}  falhou, tentando de novo em 20 s...`);
+    await esperar(20000);
+  }
+}
+
 const resultados = [];
 const inicio = Date.now();
 for (const av of avaliacoes) {
   const t0 = Date.now();
   try {
-    const resp = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...av, nota: Number(av.nota) }),
-    });
-    const corpo = await resp.json();
-    resultados.push({ id: av.id, ok: resp.ok, segundos: (Date.now() - t0) / 1000, esperado: gabarito[av.id], ...corpo });
+    const { resp, corpo, tentativa } = await enviar(av);
+    resultados.push({ id: av.id, ok: resp.ok, tentativas: tentativa, segundos: (Date.now() - t0) / 1000, esperado: gabarito[av.id], ...corpo });
     console.log(`${av.id}  ${corpo.categoria ?? '?'}  (esperado: ${gabarito[av.id]})  urgência: ${corpo.urgencia ?? '?'}`);
   } catch (erro) {
     resultados.push({ id: av.id, ok: false, erro: String(erro) });
     console.log(`${av.id}  ERRO: ${erro}`);
   }
+  await esperar(PAUSA_MS);
 }
 const total = (Date.now() - inicio) / 1000;
 const validos = resultados.filter((r) => r.ok && r.categoria);
@@ -60,6 +82,10 @@ writeFileSync('dados/resultados.json', JSON.stringify(resultados, null, 2));
 console.log('\n--- Resumo ---');
 console.log(`Avaliações enviadas: ${avaliacoes.length}`);
 console.log(`Respondidas sem erro: ${validos.length}`);
-console.log(`Tempo total: ${total.toFixed(1)} s (${(total / avaliacoes.length).toFixed(1)} s por avaliação)`);
+console.log(`Tempo total: ${total.toFixed(1)} s (${(total / avaliacoes.length).toFixed(1)} s por avaliação, com ${PAUSA_MS / 1000} s de pausa entre elas)`);
+const processamento = validos.reduce((soma, r) => soma + r.segundos, 0);
+console.log(`Tempo do fluxo, sem as pausas: ${processamento.toFixed(1)} s (${(processamento / Math.max(validos.length, 1)).toFixed(1)} s por avaliação)`);
+const urgentes = validos.filter((r) => r.urgencia === 'alta').length;
+console.log(`Urgência alta: ${urgentes}`);
 console.log(`Categoria igual ao gabarito: ${acertos} de ${validos.length} (${((100 * acertos) / Math.max(validos.length, 1)).toFixed(0)}%)`);
 console.log('Detalhes salvos em dados/resultados.json');
