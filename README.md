@@ -2,7 +2,18 @@
 
 Automação no n8n que faz a triagem das avaliações de clientes de um restaurante de delivery: um modelo local no Ollama classifica cada avaliação (categoria, sentimento e urgência), o Gemini escreve um resumo e uma resposta sugerida, tudo vai para uma tabela e os casos urgentes geram um alerta no Telegram.
 
-> Projeto em construção. Os números de resultado entram depois da medição.
+## Resultado
+
+Medido com 100 avaliações fictícias e um gabarito de categorias ([detalhes](MEDICAO.md)):
+
+| | Na mão | Com o fluxo |
+| --- | --- | --- |
+| Tempo para 100 avaliações | ~73 min | 25 min, sem ninguém na frente da tela |
+| Categoria certa | 95% (18 de 19) | 88% (87 de 99) |
+
+O primeiro prompt acertava 65%. Os erros tinham padrão (por exemplo, nenhuma das 10 sugestões foi reconhecida), então escrevi definições, regras de desempate e exemplos para cada um, e o acerto subiu para 88% no mesmo modelo local e gratuito.
+
+> Vídeo da demonstração em breve.
 
 ## Como funciona
 
