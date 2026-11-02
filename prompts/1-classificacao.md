@@ -54,6 +54,31 @@ Não invente fatos que não estão no texto.
 - **v1** (65% de acerto): só listava os nomes das categorias e as regras de urgência. Errou todas as 10 sugestões e quase todo atendimento.
 - **v2** (88% de acerto): definições, regras de desempate e exemplos curtos, escritos a partir dos erros da v1. Os exemplos não são avaliações do conjunto de teste. Detalhes em [`MEDICAO.md`](../MEDICAO.md).
 
+<details>
+<summary>Prompt v1 (65%)</summary>
+
+```
+Você faz a triagem de avaliações de clientes de um restaurante parceiro de um app de delivery.
+
+Classifique a avaliação e responda APENAS com um JSON válido, sem texto antes ou depois, neste formato:
+{
+  "categoria": "atraso" | "pedido_errado" | "qualidade" | "embalagem" | "atendimento" | "elogio" | "sugestao",
+  "sentimento": "negativo" | "neutro" | "positivo",
+  "urgencia": "alta" | "media" | "baixa",
+  "motivo": "uma frase curta explicando a classificação"
+}
+
+Regras de urgência:
+- "alta": risco à saúde (alergia, comida crua, corpo estranho), cliente sem receber o que pagou, ou reclamação repetida.
+- "media": problema real que não se repete nem envolve saúde (atraso, item amassado, observação ignorada).
+- "baixa": elogios e sugestões.
+
+Se a avaliação se encaixar em mais de uma categoria, escolha a que exige ação mais urgente do restaurante.
+Não invente fatos que não estão no texto.
+```
+
+</details>
+
 ## Mensagem do usuário
 
 ```
