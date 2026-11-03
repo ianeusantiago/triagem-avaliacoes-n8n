@@ -4,7 +4,9 @@ Um restaurante de delivery recebe dezenas de avaliações por dia e precisa acha
 
 **Resultado medido:** 88% de acerto de categoria contra um gabarito, e 100 avaliações triadas em 25 min sem ninguém na frente da tela, contra ~73 min fazendo à mão.
 
-> Vídeo da demonstração em breve.
+![Demonstração: uma avaliação com alergia entra, é classificada como urgente, ganha resposta sugerida e vira uma linha na tabela](docs/demo.gif)
+
+[Vídeo em MP4 (44 s)](docs/demo.mp4)
 
 ## Resultado
 
@@ -56,6 +58,7 @@ E no Telegram: `🚨 Avaliação urgente (pedido_errado): Cliente recebeu milksh
 - **Dois modelos, duas tarefas.** Classificar é seguir regras, então fica com um modelo pequeno (llama3.2) rodando no próprio computador: sem custo por chamada e sem o texto do cliente sair da máquina. Escrever a resposta exige texto bom, então fica com o Gemini.
 - **Categorias fechadas e saída só em JSON.** O modelo escolhe de uma lista, o que permite contar, comparar com o gabarito e ler os campos direto no próximo nó.
 - **A IA sugere, a pessoa decide.** A resposta sugerida nunca promete reembolso, cupom ou desconto: isso custa dinheiro e fica com o dono.
+- **O alerta não derruba o fluxo.** Se o Telegram falhar, o nó tenta de novo e, se não der, o fluxo segue: a avaliação já está salva e a resposta volta normalmente.
 - **Medir antes de afirmar.** As 100 avaliações de teste têm a categoria esperada em [`dados/gabarito.csv`](dados/gabarito.csv), e o script de envio calcula o acerto sozinho.
 
 ## Limitações e próximos passos

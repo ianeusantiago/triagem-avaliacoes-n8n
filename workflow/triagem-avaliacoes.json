@@ -341,7 +341,9 @@
           "id": "CONFIGURE_NO_SEU_N8N",
           "name": "Telegram account"
         }
-      }
+      },
+      "retryOnFail": true,
+      "onError": "continueRegularOutput"
     }
   ],
   "pinData": {},
