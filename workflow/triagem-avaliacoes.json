@@ -1,0 +1,482 @@
+{
+  "name": "Triagem de Avaliações",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "avaliacao",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "0104fb49-3a82-4033-ba1a-0d4dc51b28e4",
+      "name": "Webhook"
+    },
+    {
+      "parameters": {
+        "model": "llama3.2:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        160,
+        208
+      ],
+      "id": "8694675d-40bb-4786-b074-15ff9b95e36f",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "CONFIGURE_NO_SEU_N8N",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Nota: {{ $json.body.nota }} de 5\nCanal: {{ $json.body.canal }}\nAvaliação: {{ $json.body.texto }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "Você faz a triagem de avaliações de clientes de um restaurante parceiro de um app de delivery.\n\nResponda APENAS com um JSON válido, sem texto antes ou depois:\n{\"categoria\": \"...\", \"sentimento\": \"negativo|neutro|positivo\", \"urgencia\": \"alta|media|baixa\", \"motivo\": \"frase curta\"}\n\nCategorias (use exatamente um destes nomes):\n- atraso: o pedido chegou tarde ou demorou demais. Fala de tempo.\n- pedido_errado: veio item trocado, faltou item, esqueceram algo ou veio a mais. Fala do que veio no pedido.\n- qualidade: a comida veio fria, crua, queimada, sem sabor, estragada ou com algo estranho dentro.\n- embalagem: a embalagem veio aberta, vazando, amassada ou mal fechada.\n- atendimento: problema com pessoas: entregador, atendente, falta de resposta no chat, grosseria.\n- elogio: só elogia, sem pedir nada.\n- sugestao: pede ou propõe algo novo (combo, opção de cardápio, horário), mesmo que também elogie.\n\n   Escreva o nome da categoria em português, exatamente como na lista (ex.: \"qualidade\", nunca \"quality\").\n\nRegras de desempate:\n- Se elogia E sugere algo, é \"sugestao\".\n- \"Faltou\", \"esqueceram\" ou \"veio outro item\" é sempre \"pedido_errado\", nunca \"atraso\".\n- Entregador ou atendente grosso é \"atendimento\", mesmo que o pedido também tenha atrasado.\n   - \"Sugiro\", \"podiam\", \"seria legal\" ou \"deveriam\" é sempre \"sugestao\", mesmo com elogio ou falando de guardanapo, embalagem ou bebida.\n   - Elogio ao atendimento ou ao entregador (\"atendimento ótimo\") é \"elogio\", não \"atendimento\".\n   - Pedido cancelado, sem resposta ou sem aviso do restaurante é \"atendimento\".\n   - Caixa rasgada, amassada, aberta ou vazando é \"embalagem\", mesmo se a comida estragou junto.\n   - Atraso sozinho é urgência \"media\". Só é \"alta\" se for repetido ou se o pedido nunca chegou.\n\nExemplos:\n\"Pedi coxinha e veio quibe.\" -> pedido_errado\n\"Não mandaram o refrigerante.\" -> pedido_errado\n\"Chegou 1h depois do previsto.\" -> atraso\n\"O hambúrguer veio frio e duro.\" -> qualidade\n\"O molho vazou na sacola toda.\" -> embalagem\n\"O motoboy foi mal educado comigo.\" -> atendimento\n\"Tudo perfeito, amei!\" -> elogio\n\"Muito bom! Podiam ter opção vegana.\" -> sugestao\n\nUrgência:\n- alta: risco à saúde (alergia, comida crua, corpo estranho), cliente sem receber o que pagou, ou reclamação repetida (\"de novo\", \"segunda vez\").\n- media: problema real sem risco à saúde e sem repetição.\n- baixa: elogios e sugestões.\n\nNão invente fatos que não estão no texto."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        224,
+        0
+      ],
+      "id": "4cfd8eb7-0f0a-4b23-80e4-123139ea0c11",
+      "name": "Classificar (local)",
+      "retryOnFail": true,
+      "waitBetweenTries": 700
+    },
+    {
+      "parameters": {
+        "jsCode": "function acharJson(valor) {\n  if (valor && typeof valor === 'object') {\n    if (valor.categoria || valor.resumo) return valor;\n    for (const v of Object.values(valor)) {\n      const achado = acharJson(v);\n      if (achado) return achado;\n    }\n  }\n  if (typeof valor === 'string' && valor.includes('{')) {\n    try { return JSON.parse(valor.slice(valor.indexOf('{'), valor.lastIndexOf('}') + 1)); } catch {}\n  }\n  return null;\n}\nconst dados = acharJson($json);\nif (!dados) throw new Error('Não achei o JSON na resposta do modelo');\nreturn { json: dados };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        592,
+        0
+      ],
+      "id": "9d4d2414-800c-44ef-9c56-72d73dc98e2d",
+      "name": "Ler classificação"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você ajuda o dono de um restaurante a responder avaliações de clientes de um app de delivery.\n\nAvaliação do cliente: {{ $('Webhook').item.json.body.texto }}\nNota: {{ $('Webhook').item.json.body.nota }} de 5\nClassificação: categoria {{ $json.categoria }}, urgência {{ $json.urgencia }}\n\nResponda APENAS com um JSON válido neste formato:\n{\n  \"resumo\": \"o problema em até 12 palavras, para o dono ler rápido\",\n  \"resposta_sugerida\": \"resposta educada ao cliente, em até 3 frases, em português do Brasil\"\n}\n\nRegras da resposta sugerida:\n- Agradeça e, se houver problema, peça desculpas sem dar desculpas.\n- Não prometa reembolso, cupom ou desconto: isso é decisão do dono.\n- Se a urgência for alta, diga que o restaurante vai entrar em contato.\n- Não use o nome do cliente.",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        816,
+        0
+      ],
+      "id": "b8ef6c71-95b0-44eb-8dd5-c2edb2e93017",
+      "name": "Resposta com Gemini"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        752,
+        208
+      ],
+      "id": "e096157d-8da9-49fe-b45d-b049e551eda2",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "CONFIGURE_NO_SEU_N8N",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "function acharJson(valor) {\n  if (valor && typeof valor === 'object') {\n    if (valor.categoria || valor.resumo) return valor;\n    for (const v of Object.values(valor)) {\n      const achado = acharJson(v);\n      if (achado) return achado;\n    }\n  }\n  if (typeof valor === 'string' && valor.includes('{')) {\n    try { return JSON.parse(valor.slice(valor.indexOf('{'), valor.lastIndexOf('}') + 1)); } catch {}\n  }\n  return null;\n}\nconst dados = acharJson($json);\nif (!dados) throw new Error('Não achei o JSON na resposta do modelo');\nreturn { json: dados };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        0
+      ],
+      "id": "6c2f631b-3add-4f66-80e9-6b0b9f72594c",
+      "name": "Ler resposta"
+    },
+    {
+      "parameters": {
+        "jsCode": "const av = $('Webhook').item.json.body;\nconst cls = $('Ler classificação').item.json;\nconst resp = $json;\nreturn { json: {\n  avaliacao_id: av.id, data: av.data, nota: av.nota, canal: av.canal, texto: av.texto,\n  categoria: cls.categoria, sentimento: cls.sentimento, urgencia: cls.urgencia, motivo: cls.motivo,\n  resumo: resp.resumo, resposta_sugerida: resp.resposta_sugerida,\n} };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        0
+      ],
+      "id": "0e4e15d2-aa78-4b15-891d-a26ebdc1eb58",
+      "name": "Juntar tudo"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "KVowdr77eskUqO0O",
+          "mode": "list",
+          "cachedResultName": "avaliacoes",
+          "cachedResultUrl": "/projects/NMeSiCkt7r17Ec0i/datatables/KVowdr77eskUqO0O"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "avaliacao_id",
+              "displayName": "avaliacao_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "data",
+              "displayName": "data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nota",
+              "displayName": "nota",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "canal",
+              "displayName": "canal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "texto",
+              "displayName": "texto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "categoria",
+              "displayName": "categoria",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "sentimento",
+              "displayName": "sentimento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "urgencia",
+              "displayName": "urgencia",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "motivo",
+              "displayName": "motivo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "resumo",
+              "displayName": "resumo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "resposta_sugerida",
+              "displayName": "resposta_sugerida",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1568,
+        0
+      ],
+      "id": "c0e063a5-f713-44c1-866d-4ba19bacedfa",
+      "name": "Salvar na tabela"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "ef36470e-da2b-4ec4-8f73-80ab17e60600",
+              "leftValue": "={{ $('Juntar tudo').item.json.urgencia }}",
+              "rightValue": "alta",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        1792,
+        0
+      ],
+      "id": "70f9f4d5-45a1-4946-a4e5-f2446d6b5ef5",
+      "name": "É urgente?"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $('Juntar tudo').item.json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2192,
+        -16
+      ],
+      "id": "f3969076-19f9-4c56-bf43-d6842bb7c7df",
+      "name": "Responder"
+    },
+    {
+      "parameters": {
+        "chatId": "SEU_CHAT_ID",
+        "text": "=🚨 Avaliação urgente ({{ $('Juntar tudo').item.json.categoria }}): {{ $('Juntar tudo').item.json.resumo }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2000,
+        -16
+      ],
+      "id": "3d7358c5-3291-4046-a55e-c720c30d568f",
+      "name": "Alerta Telegram",
+      "credentials": {
+        "telegramApi": {
+          "id": "CONFIGURE_NO_SEU_N8N",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Classificar (local)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Classificar (local)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classificar (local)": {
+      "main": [
+        [
+          {
+            "node": "Ler classificação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ler classificação": {
+      "main": [
+        [
+          {
+            "node": "Resposta com Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Resposta com Gemini",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resposta com Gemini": {
+      "main": [
+        [
+          {
+            "node": "Ler resposta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ler resposta": {
+      "main": [
+        [
+          {
+            "node": "Juntar tudo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Juntar tudo": {
+      "main": [
+        [
+          {
+            "node": "Salvar na tabela",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Salvar na tabela": {
+      "main": [
+        [
+          {
+            "node": "É urgente?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "É urgente?": {
+      "main": [
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Alerta Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "tags": []
+}

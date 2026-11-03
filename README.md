@@ -69,7 +69,7 @@ E no Telegram: `🚨 Avaliação urgente (pedido_errado): Cliente recebeu milksh
 Precisa de [Node.js](https://nodejs.org) 18+, [Ollama](https://ollama.com) com `llama3.2` e uma chave gratuita do Gemini ([Google AI Studio](https://aistudio.google.com)).
 
 1. `npx n8n` e abra http://localhost:5678.
-2. Monte o fluxo seguindo o [guia](GUIA.md) e publique.
+2. Importe [`workflow/triagem-avaliacoes.json`](workflow/triagem-avaliacoes.json) (menu ⋯ → **Import from File**), cadastre as credenciais do Ollama, do Gemini e do Telegram, troque `SEU_CHAT_ID` pelo seu e publique. Para montar do zero, siga o [guia](GUIA.md).
 3. Envie as 100 avaliações e veja o acerto:
    ```
    node scripts/enviar-avaliacoes.mjs http://localhost:5678/webhook/avaliacao
@@ -79,6 +79,7 @@ Precisa de [Node.js](https://nodejs.org) 18+, [Ollama](https://ollama.com) com `
 
 | Caminho | O que é |
 | --- | --- |
+| [`workflow/triagem-avaliacoes.json`](workflow/triagem-avaliacoes.json) | O fluxo exportado do n8n, pronto para importar |
 | [`GUIA.md`](GUIA.md) | Passo a passo para montar o fluxo no n8n |
 | [`prompts/`](prompts/) | Prompts da classificação (v1 e v2) e da resposta, com o porquê de cada regra |
 | [`dados/avaliacoes-ficticias.csv`](dados/avaliacoes-ficticias.csv) | 100 avaliações fictícias para teste |
