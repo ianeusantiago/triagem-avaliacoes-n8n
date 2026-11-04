@@ -67,6 +67,10 @@ E no Telegram: `🚨 Avaliação urgente (pedido_errado): Cliente recebeu milksh
 - **Confusões que sobraram:** pedido errado contra atendimento, e atraso contra atendimento (3 casos cada).
 - **Dados fictícios:** as avaliações foram criadas para teste. Com avaliações reais, o acerto precisa ser medido de novo.
 
+## Análise dos resultados
+
+O [painel da triagem](https://ianeusantiago.github.io/painel-avaliacoes/) ([repositório](https://github.com/ianeusantiago/painel-avaliacoes)) analisa estes resultados para o dono do restaurante e para quem cuida da IA. Lá está o teste de três formas de decidir a urgência: uma pergunta focada de sim ou não cortou 63% dos alertas falsos sem perder nenhuma urgência real.
+
 ## Rodar
 
 Precisa de [Node.js](https://nodejs.org) 18+, [Ollama](https://ollama.com) com `llama3.2` e uma chave gratuita do Gemini ([Google AI Studio](https://aistudio.google.com)).
